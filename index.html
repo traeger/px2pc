@@ -2,44 +2,46 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <title>px to & converter</title>
     <script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
     <script>
-nup = function(array) {
-  var j = 0
-  result = new Array()
-  var last = undefined
-  for(var i = 0, len = array.length; i < len; ++i) {
-    if(last === undefined || array[i] != last) {
-      last = result[j] = array[i]
-      ++j
-    }
-  }
-  return result
+var init = function() {
+  conv.reference(960)
+  conv.add(1)
+  conv.add(2)
+  conv.add(124)
+  conv.add(960) 
 }
-$(function() {
-  $('#insert .add').click(function() {
-    var px = $('#insert .px').val()
-    add(px)
-  })
-  $('.update').click(function() {
-    update()
-  })
+
+var conv = new function() { lib = this;
+  lib.nup = function(array) {
+    var j = 0
+    result = new Array()
+    var last = undefined
+    for(var i = 0, len = array.length; i < len; ++i) {
+      if(last === undefined || array[i] != last) {
+        last = result[j] = array[i]
+        ++j
+      }
+    }
+    return result
+  }
+  lib._values = new Array()
   
-  var values = new Array()
-  var add = function(px) {
+  lib.add = function(px) {
     if(!px) return
     
-    values.push(px)
-    update()
+    lib._values.push(px)
+    lib.update()
   }
-  var update = function() {
-    values = values.sort(function(a,b) { return b < a })
-    values = nup(values)
+  lib.update = function() {
+    lib._values = lib._values.sort(function(a,b) { return b < a })
+    lib._values = lib.nup(lib._values)
     
     var list = $('#list').html('')
     var reference = $('#reference').val()
-    for(var i = 0, len = values.length; i < len; ++i) {
-      var px = values[i]
+    for(var i = 0, len = lib._values.length; i < len; ++i) {
+      var px = lib._values[i]
       var pc = px / reference * 100
       var e_px = $('<td class="px">'+px+' px</td>')
       var e_pc = $('<td class="pc">'+pc+' %</td>')
@@ -47,12 +49,23 @@ $(function() {
       list.append(e)
     }
   }
-  
-  add(1)
-  add(2)
-  add(124)
-  add(960)
+  lib.reference = function(ref) {
+    $('#reference').val(ref)
+    lib.update()
+  }
+}
+
+$(function() {
+  $('#insert .add').click(function() {
+    var px = $('#insert .px').val()
+    conv.add(px)
+  })
+  $('.update').click(function() {
+    conv.update()
+  })
+  init()
 })
+
     </script>
     <link rel="stylesheet" href="lib/bootstrap.min.css">
     <style type="text/css">
@@ -74,7 +87,7 @@ $(function() {
     <div class="container">
       <div class="page-header">
         <h1>
-          px to % Converter
+          px to % converter
         </h1>
         <span class="fork">
           <iframe src="http://ghbtns.com/github-btn.html?user=traeger&repo=px2pc&type=fork&count=false"
