@@ -1,0 +1,116 @@
+<!doctype html public "✰">
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
+    <script>
+nup = function(array) {
+  var j = 0
+  result = new Array()
+  var last = undefined
+  for(var i = 0, len = array.length; i < len; ++i) {
+    if(last === undefined || array[i] != last) {
+      last = result[j] = array[i]
+      ++j
+    }
+  }
+  return result
+}
+$(function() {
+  $('#insert .add').click(function() {
+    var px = $('#insert .px').val()
+    add(px)
+  })
+  $('.update').click(function() {
+    update()
+  })
+  
+  var values = new Array()
+  var add = function(px) {
+    if(!px) return
+    
+    values.push(px)
+    update()
+  }
+  var update = function() {
+    values = values.sort(function(a,b) { return b < a })
+    values = nup(values)
+    
+    var list = $('#list').html('')
+    var reference = $('#reference').val()
+    for(var i = 0, len = values.length; i < len; ++i) {
+      var px = values[i]
+      var pc = px / reference * 100
+      var e_px = $('<td class="px">'+px+' px</td>')
+      var e_pc = $('<td class="pc">'+pc+' %</td>')
+      var e = $('<tr class="entry"></tr>').append(e_px).append(e_pc)
+      list.append(e)
+    }
+  }
+  
+  add(1)
+  add(2)
+  add(124)
+  add(960)
+})
+    </script>
+    <link rel="stylesheet" href="lib/bootstrap.min.css">
+    <style type="text/css">
+      input[type="submit"],
+      input[type="text"]{display: inline-block; width: 100%; }
+      #list {width: 100%}
+      #list.entry {height: 20px; }
+      .pc {text-align: right; }
+      #list tr:nth-child(odd) {background: rgb(245, 245, 245); }
+      #list td {padding: 2px 5px; }
+      .row{padding-top: 10px; }
+      .panel-min .panel-body, .panel-min .panel-footer{ padding: 4px !important;}
+      .page-header {margin: 10px 0px 10px 0px; position: relative; }
+      .page-header h1 {font-size: 150%; display: inline-block; margin: 0; }
+      .page-header .fork {position: absolute; top: 0; right: 0; display: block; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>
+          px to % Converter
+        </h1>
+        <span class="fork">
+          <iframe src="http://ghbtns.com/github-btn.html?user=traeger&repo=px2pc&type=fork&count=false"
+            allowtransparency="true" frameborder="0" scrolling="0" width="53" height="20"></iframe>
+        </span>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div id="head" class="input-group">
+            <span class="input-group-btn">
+              <button class="btn btn-primary update" type="button">Reference Size</button>
+            </span>
+            <input id="reference" type="text" class="form-control" value="960">
+            <span class="input-group-addon">px</span>
+          </div><!-- /input-group -->
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default panel-min">
+            <div class="panel-body">
+              <table id="list"></table>
+            </div>
+            <div class="panel-footer">
+              <div id="insert" class="input-group">
+                <span class="input-group-btn">
+                  <button class="btn btn-default add" type="button">add</button>
+                </span>
+                <input type="text" class="form-control px">
+                <span class="input-group-addon">px</span>
+              </div><!-- /input-group -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
